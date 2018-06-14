@@ -1,0 +1,11 @@
+---
+# defaults file for git-download-suitecrm
+
+# The default git repo to use when downloading and installing SuiteCRM
+git_repo: "https://github.com/salesagility/SuiteCRM.git"
+
+# The database to create when setting up SuiteCRM
+db_name: "suitecrm"
+
+# Are you restoring your SuiteCRM from another environment?
+#suitecrm_restore: "no"  - Not yet implemented

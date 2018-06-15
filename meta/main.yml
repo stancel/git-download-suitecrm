@@ -7,8 +7,6 @@ galaxy_info:
 
   min_ansible_version: 2.4
 
-  # If this a Container Enabled role, provide the minimum Ansible Container version.
-  # min_ansible_container_version:
 
   github_branch: master
   
@@ -19,14 +17,16 @@ galaxy_info:
     - xenial
   - name: Debian
     versions:
-    - 7
-    - 8
-    - 9
+    - wheezy
+    - jessie
+    - stretch
 
   galaxy_tags: 
-    - suitecrm
+    - SuiteCRM
+    - crm
     - apache2
     - php7
 
 dependencies: 
-  - stancel.apache-webserver
+
+    - stancel.apache-webserver

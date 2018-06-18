@@ -1,6 +1,6 @@
 galaxy_info:
   author: 'Brad Stancel'
-  description: Downloads and installs a chosen release of SuiteCRM to the default document root for the Apache webserver
+  description: Downloads and installs a chosen release of SuiteCRM to the default document root for the Apache webserver, or other chosen path/document root directory
   company: YourOnlineDept.com
 
   license: GPLv3
@@ -27,6 +27,4 @@ galaxy_info:
     - apache2
     - php7
 
-dependencies: 
-
-    - stancel.apache-webserver
+dependencies: []

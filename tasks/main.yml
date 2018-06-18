@@ -134,7 +134,7 @@
     state: present
 
 - name: "Create and set a swap file if one is not set. SuiteCRM composer has problems otherwise"
-- block:
+  block:
 
     - name: Create swap directory
       command: mkdir -p /extraswap

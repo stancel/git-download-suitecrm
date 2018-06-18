@@ -2,7 +2,7 @@
 # tasks file for git-download-suitecrm
 
 - name: "Install Git and other needed packages"
-  apt: name={{ item }} update_cache=yes 
+  package: name={{ item }}  
   with_items: 
   - git
   - php7.0
@@ -133,6 +133,43 @@
     priv: '{{ db_name }}.*:TRIGGER,CREATE ROUTINE,CREATE TEMPORARY TABLES,CREATE VIEW,ALTER ROUTINE,REFERENCES,EVENT,SHOW VIEW,EXECUTE,ALTER,DROP,CREATE,INDEX,SELECT,INSERT,UPDATE,DELETE'
     state: present
 
+- name: "Create and set a swap file if one is not set. SuiteCRM composer has problems otherwise"
+- block:
+
+    - name: Create swap directory
+      command: mkdir -p /extraswap
+
+    - name: Create swap space
+      command: dd if=/dev/zero of=swapfile bs=1M count=2000
+      args:
+        chdir: /extraswap
+
+    - name: Create swap space
+      command: mkswap swapfile
+      args:
+        chdir: /extraswap
+
+    - name: Turn swap on
+      command: swapon swapfile
+      args:
+        chdir: /extraswap
+
+    - name: Set swap file permission
+      command: chmod 600 swapfile
+      args:
+        chdir: /extraswap
+
+    - name: Add to fstab
+      action: lineinfile dest=/etc/fstab regexp="swapfile" line="/extraswap/swapfile none swap sw 0 0" state=present
+
+    - name: Set swapiness
+      sysctl:
+        name: vm.swappiness
+        value: "1" 
+
+  # Only execute if the swap is not already setup
+  when: ansible_swaptotal_mb < 1
+
 - name: "Install Composer program"
   script: ../files/install_composer.sh
   args: 
@@ -153,7 +190,7 @@
 
 - name: "Setup cron job for SuiteCRM Schedulers"
   cron:
-    user: www-data
+    user: "{{ web_user }}"
     name: "SuiteCRM Schedulers"
     minute: "*"
     hour: "*"

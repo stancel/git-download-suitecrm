@@ -115,7 +115,7 @@
   when: git_branch != ""
 
 - name: "Install Python MySQL bindings required for Ansible MySQL module"
-  apt: name=python-mysqldb state=installed
+  apt: name=python-mysqldb state=present
 
 - name: MYSQL | Create {{db_name}} database
   mysql_db:

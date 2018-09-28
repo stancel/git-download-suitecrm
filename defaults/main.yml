@@ -10,8 +10,10 @@ git_branch: ""
 # The database to create when setting up SuiteCRM
 db_name: "suitecrm"
 
-# The Document Root or file path where Mantis files will be stored and served up by your webserver. The default path is "/var/www/html" and assumes you are running Apache2 on Debian or Ubuntu
-web_files_path: "/var/www/html"
+# The Document Root or file path where the files will be stored and served up by your webserver. The default path is "/var/www/html" and assumes you are running Apache2 on Debian or Ubuntu
+web_files_path: "/var/www"
+web_directory_for_suitecrm: "/html"
+
 
 # The linux username used by your webserver. The default value is "www-data" which assumes Apache is used on a Debian or Ubuntu linux
 web_user: "www-data"
@@ -19,6 +21,19 @@ web_user: "www-data"
 # The linux group used by your webserver. The default value is "www-data" which assumes Apache is used on a Debian or Ubuntu linux
 web_group: "www-data"
 
+# manage package with apt, you can disable the installation of package
+manage_packages: true
+
+# php.ini configurations flags, to allow or not the settings of these items, default is true, useful if your server is already setup with different values
+configure_mysqli_allow_local_infile: true
+configure_memory_limit: true
+configure_post_max_size: true
+configure_upload_max_filesize: true
+configure_max_input_time: true
+configure_max_execution_time: true
+
+# Install composer or not, default yes
+install_composer: true
 
 # Are you restoring your SuiteCRM from another environment?
 #suitecrm_restore: "no"  - Not yet implemented

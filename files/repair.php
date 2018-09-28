@@ -10,8 +10,12 @@
 
 if(!defined('sugarEntry'))define('sugarEntry', true);
 
-require_once('/var/www/html/include/entryPoint.php');
-require_once('/var/www/html/modules/Administration/QuickRepairAndRebuild.php');
+// original path
+// require_once('/var/www/html/include/entryPoint.php');
+require_once('{{ web_files_path }}/include/entryPoint.php');
+// original path
+// require_once('/var/www/html/modules/Administration/QuickRepairAndRebuild.php');
+require_once('{{ web_files_path }}/modules/Administration/QuickRepairAndRebuild.php');
 
 //Bug 27991 . Redirect to index.php if the request is not come from CLI.
 $sapi_type = php_sapi_name();

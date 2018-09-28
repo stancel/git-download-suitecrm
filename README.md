@@ -75,6 +75,7 @@ Manage package with apt, you can disable the installation of package
 ```
 
 The php.ini configurations, to allow or not the setting of these items, useful if your server is already setup with different values, default are true```
+```
 configure_mysqli_allow_local_infile: true
 configure_memory_limit: true
 configure_post_max_size: true
@@ -84,6 +85,7 @@ configure_max_execution_time: true
 ```
 
 Install Composer or not, default is true, disable it if you already have composer installed
+
 ```
 install_composer: true
 ```
@@ -126,4 +128,10 @@ GPLv3
 Author Information
 ------------------
 
-Brad Stancel
+[Brad Stancel](https://github.com/stancel) 
+
+Contributors
+------------------
+
+[Bouteillier Nicolas](https://github.com/nicolas-san)
+

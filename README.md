@@ -62,6 +62,24 @@ The linux group used by your webserver. The default value is `www-data` which as
 	web_group: "www-data"
 ```
 
+Manage package with apt, you can disable the installation of package
+```
+    manage_packages: true
+```
+
+The php.ini configurations, to allow or not the setting of these items, useful if your server is already setup with different values, default are true```
+configure_mysqli_allow_local_infile: true
+configure_memory_limit: true
+configure_post_max_size: true
+configure_upload_max_filesize: true
+configure_max_input_time: true
+configure_max_execution_time: true
+```
+
+Install Composer or not, default is true, disable it if you already have composer installed
+```
+install_composer: true
+```
 
 
 Dependencies
@@ -72,6 +90,8 @@ None
 Example Playbook
 ----------------
 
+Copy and edit *defaults/main.yml* to your *vars/main.yml*
+
 	- hosts: your_new_crm_server
 	  vars_files:
 	    - vars/main.yml
@@ -79,7 +99,7 @@ Example Playbook
 	    - { role: stancel.git-download-suitecrm }
 
 
-or 
+or just pass the variables in the playbook
 
 
 	- hosts: your_new_crm_server 

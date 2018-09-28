@@ -46,10 +46,17 @@ The root password for your MySQL, MariaDB or Percona Server DB instance to creat
 ```
 	mysql_root_password: "your MySQL root password"
 ```
-The Document Root or file path where Mantis files will be stored and served up by your webserver. The default path is `/var/www/html` and assumes you are running Apache2 on Debian or Ubuntu.
+The Document Root or file path where the files will be stored and served up by your webserver. The default path is `/var/www/html` and assumes you are running Apache2 on Debian or Ubuntu.
+
+First part => *web_files_path:* is the root directory of your webserver
+
+Second part =>  *web_directory_for_suitecrm:* is the suiteCRM directory inside the root directory
+
+!Be aware of the starting / !
 
 ```
-	web_files_path: "/var/www/html"
+    web_files_path: "/var/www"
+    web_directory_for_suitecrm: "/html"
 ```
 The linux username used by your webserver. The default value is `www-data` which assumes Apache is used on a Debian or Ubuntu linux.
 

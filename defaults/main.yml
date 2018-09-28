@@ -1,5 +1,5 @@
 ---
-# defaults file for git-download-suitecrm
+# defaults file for git-download-suitecrm, will be used if any of these have been defined elsewhere
 
 # The default git repo to use when downloading and installing SuiteCRM
 git_repo: "https://github.com/salesagility/SuiteCRM.git"

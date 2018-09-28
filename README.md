@@ -46,10 +46,17 @@ The root password for your MySQL, MariaDB or Percona Server DB instance to creat
 ```
 	mysql_root_password: "your MySQL root password"
 ```
-The Document Root or file path where Mantis files will be stored and served up by your webserver. The default path is `/var/www/html` and assumes you are running Apache2 on Debian or Ubuntu.
+The Document Root or file path where the files will be stored and served up by your webserver. The default path is `/var/www/html` and assumes you are running Apache2 on Debian or Ubuntu.
+
+First part => *web_files_path:* is the root directory of your webserver
+
+Second part =>  *web_directory_for_suitecrm:* is the suiteCRM directory inside the root directory
+
+!Be aware of the starting / !
 
 ```
-	web_files_path: "/var/www/html"
+    web_files_path: "/var/www"
+    web_directory_for_suitecrm: "/html"
 ```
 The linux username used by your webserver. The default value is `www-data` which assumes Apache is used on a Debian or Ubuntu linux.
 
@@ -62,6 +69,26 @@ The linux group used by your webserver. The default value is `www-data` which as
 	web_group: "www-data"
 ```
 
+Manage package with apt, you can disable the installation of package
+```
+    manage_packages: true
+```
+
+The php.ini configurations, to allow or not the setting of these items, useful if your server is already setup with different values, default are true```
+```
+configure_mysqli_allow_local_infile: true
+configure_memory_limit: true
+configure_post_max_size: true
+configure_upload_max_filesize: true
+configure_max_input_time: true
+configure_max_execution_time: true
+```
+
+Install Composer or not, default is true, disable it if you already have composer installed
+
+```
+install_composer: true
+```
 
 
 Dependencies
@@ -72,6 +99,8 @@ None
 Example Playbook
 ----------------
 
+Copy and edit *defaults/main.yml* to your *vars/main.yml*
+
 	- hosts: your_new_crm_server
 	  vars_files:
 	    - vars/main.yml
@@ -79,7 +108,7 @@ Example Playbook
 	    - { role: stancel.git-download-suitecrm }
 
 
-or 
+or just pass the variables in the playbook
 
 
 	- hosts: your_new_crm_server 
@@ -99,4 +128,10 @@ GPLv3
 Author Information
 ------------------
 
-Brad Stancel
+[Brad Stancel](https://github.com/stancel) 
+
+Contributors
+------------------
+
+[Bouteillier Nicolas](https://github.com/nicolas-san)
+

@@ -1,0 +1,58 @@
+---
+# vars file for git-download-suitecrm
+
+#####     Required Variables      #####
+# Fill in appropriate values below unless passing from a higher precedence
+
+# Choose the git tagged release that you would like to download and install. Comment this out if using a git branch instead.
+tagged_release_version: "v7.10.6"
+
+# The DB user to create when to be used by the SuiteCRM application
+db_user: "suitecrmDbUser"
+
+# The password for the DB user being created
+db_password: "some-really-secure-password"
+
+# The root password for your MySQL, MariaDB or Percona Server DB instance to create the DB and user.
+mysql_root_password: "your MySQL root password"
+
+
+#####     Optional Variables      #####
+
+# These variables are set with the below defaults in defaults/main.yml. 
+# Only uncomment and change them or pass values if you would like
+
+# The default git repo to use when downloading and installing SuiteCRM
+#git_repo: "https://github.com/salesagility/SuiteCRM.git"
+
+# If you are using your own forked repo an want to use a branch instead of a tagged release then fill in a value and comment out the "tagged_release_version" variable 
+#git_branch: ""
+
+# The database to create when setting up SuiteCRM
+#db_name: "suitecrm"
+
+# The Document Root or file path where the files will be stored and served up by your webserver. The default path is "/var/www/html" and assumes you are running Apache2 on Debian or Ubuntu
+#web_files_path: "/var/www"
+#web_directory_for_suitecrm: "/html"
+
+
+# The linux username used by your webserver. The default value is "www-data" which assumes Apache is used on a Debian or Ubuntu linux
+#web_user: "www-data"
+
+# The linux group used by your webserver. The default value is "www-data" which assumes Apache is used on a Debian or Ubuntu linux
+#web_group: "www-data"
+
+# manage package with apt, you can disable the installation of package
+#manage_packages: true
+
+# php.ini configurations flags, to allow or not the settings of these items, default is true, useful if your server is already setup with different values
+#configure_mysqli_allow_local_infile: true
+#configure_memory_limit: true
+#configure_post_max_size: true
+#configure_upload_max_filesize: true
+#configure_max_input_time: true
+#configure_max_execution_time: true
+
+# Install composer or not, default yes
+#install_composer: true
+

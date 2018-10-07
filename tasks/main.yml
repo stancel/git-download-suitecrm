@@ -23,9 +23,11 @@
   - php7.0-gd
   notify: 
   - restart-apache
+  when: manage_packages
 
 - name: 'Upgrade APT to the lastest packages'
   action: apt upgrade=safe
+  when: manage_packages
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -33,6 +35,7 @@
     section: MySQLi
     option: mysqli.allow_local_infile
     value: 0
+  when: configure_mysqli_allow_local_infile
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -40,6 +43,7 @@
     section: PHP
     option: memory_limit
     value: 756M
+  when: configure_memory_limit
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -47,6 +51,7 @@
     section: PHP
     option: post_max_size
     value: 64M
+  when: configure_post_max_size
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -54,6 +59,7 @@
     section: PHP
     option: upload_max_filesize
     value: 64M
+  when: configure_upload_max_filesize
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -61,6 +67,7 @@
     section: PHP
     option: max_input_time
     value: 60
+  when: configure_max_input_time
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -68,7 +75,7 @@
     section: PHP
     option: max_execution_time
     value: 300
-
+  when: configure_max_execution_time
 # Leaving this here as a reminder that this should *NOT* be set to anything other than UTC
 #- name: "Changing PHP ini file options"
 #  ini_file: 
@@ -77,54 +84,60 @@
 #    option: date.timezone
 #    value: America/New_York
 
-- name: "Clearing out existing web directory"
+- name: "Debugging the web files path variable"
+  debug: var=web_files_path
+
+- name: "Debugging the web files path variable"
+  debug: var=web_directory_for_suitecrm
+
+- name: "Clearing out existing install directory"
   file: 
     state: absent 
-    path: "{{ web_files_path }}/"
+    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
 
-- name: "Re-creating html directory"
-  file:
-    path: "{{ web_files_path }}"
-    state: directory
-    owner: "{{ web_user }}"
-    group: "{{ web_group }}"
-    mode: 0644
-    recurse: yes
+#- name: "Creating or re-creating html directory"
+#  file:
+#    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+#    state: directory
+#    owner: "{{ web_user }}"
+#    group: "{{ web_group }}"
+#    mode: 0644
+#    recurse: yes
 
 - name: "Git clone the repo"
-  command: git clone {{ git_repo }} html
+  command: git clone {{ git_repo }} {{ web_files_path }}{{ web_directory_for_suitecrm }}
   args: 
-    chdir: "{{ web_files_path }}/.."
+    chdir: "{{ web_files_path }}"
 
-- name: Debugging the git_branch variable
+- name: "Debugging the git_branch variable"
   debug: var=git_branch
 
-- name: Debugging the tagged_release_version variable
+- name: "Debugging the tagged_release_version variable"
   debug: var=tagged_release_version
 
 - name: "Checkout the desired release"
   command: git checkout {{ tagged_release_version }}
   args: 
-    chdir: "{{ web_files_path }}"
+    chdir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
   when: tagged_release_version != ""
 
 - name: "Checkout the desired branch"
   command: git checkout {{ git_branch }}
   args: 
-    chdir: "{{ web_files_path }}"
+    chdir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
   when: git_branch != ""
 
 - name: "Install Python MySQL bindings required for Ansible MySQL module"
   apt: name=python-mysqldb state=present
 
-- name: MYSQL | Create {{db_name}} database
+- name: "MYSQL | Create {{db_name}} database"
   mysql_db:
     name: "{{ db_name }}"
     login_password: "{{ mysql_root_password }}"
     state: present
     collation: "utf8_unicode_ci"
 
-- name: MYSQL | Create {{db_name}} user
+- name: "MYSQL | Create {{db_name}} user"
   mysql_user:
     login_password: "{{ mysql_root_password }}"
     name: "{{ db_user }}"
@@ -174,16 +187,17 @@
   script: ../files/install_composer.sh
   args: 
     creates: /usr/local/bin/composer
+  when: install_composer
 
 - name: "Install Composer packages"
   composer: 
     command: install
-    working_dir: "{{ web_files_path }}"
+    working_dir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
 
 - name: "Copying repair.php (to repair permissions after deployments) to /usr/local/bin of server"
-  copy:
-    src: ../files/repair.php
-    dest: /usr/local/bin/repair.php
+  template:
+    src: 'repair.php.j2'
+    dest: '/usr/local/bin/repair.php'
     owner: root
     group: root
     mode: 0755
@@ -197,16 +211,16 @@
     day: "*"
     month: "*"
     weekday: "*"
-    job: "php -f {{ web_files_path }}/cron.php > /dev/null 2>&1"
+    job: "php -f {{ web_files_path }}{{ web_directory_for_suitecrm }}/cron.php > /dev/null 2>&1"
 
 - name: "Run SuiteCRM Quick Repair and Rebuild script"
   shell: 'php /usr/local/bin/repair.php'
   args:
-    chdir: '{{ web_files_path }}'
+    chdir: '{{ web_files_path }}{{ web_directory_for_suitecrm }}'
 
 - name: "Setting ownership and permissions for web directory"
   file:
-    path: "{{ web_files_path }}"
+    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
     state: directory
     owner: "{{ web_user }}"
     group: "{{ web_group }}"
@@ -215,7 +229,7 @@
 
 - name: "Removing Git folder from web server permissions"
   file:
-    path: "{{ web_files_path }}/.git"
+    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}/.git"
     state: directory
     owner: root
     group: root
@@ -224,7 +238,7 @@
 
 - name: "Removing .gitignore from web server permissions"
   file:
-    path: "{{ web_files_path }}/.gitignore"
+    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}/.gitignore"
     state: file
     owner: root
     group: root

@@ -56,3 +56,8 @@ mysql_root_password: "your MySQL root password"
 # Install composer or not, default yes
 #install_composer: true
 
+# Is this a "new", "upgrade" or "restore" installation? "new" and "upgrade" installs install files from Git, "restore" skips any git deployments and expect a later role to restore files to the needed directory.
+#installation_type: "new"
+
+# Is this instance to be used for a "dev", "qa" or "prod" environment? Only "prod" environments will deploy the SuiteCRM schedulers.
+#environment_type: "prod"

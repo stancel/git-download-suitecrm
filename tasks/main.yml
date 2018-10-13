@@ -108,6 +108,7 @@
   command: git clone {{ git_repo }} {{ web_files_path }}{{ web_directory_for_suitecrm }}
   args: 
     chdir: "{{ web_files_path }}"
+  when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Debugging the git_branch variable"
   debug: var=git_branch
@@ -119,13 +120,15 @@
   command: git checkout {{ tagged_release_version }}
   args: 
     chdir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
-  when: tagged_release_version != ""
+  when: (tagged_release_version != "") and 
+          (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Checkout the desired branch"
   command: git checkout {{ git_branch }}
   args: 
     chdir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
-  when: git_branch != ""
+  when: (git_branch != "") and 
+          (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Install Python MySQL bindings required for Ansible MySQL module"
   apt: name=python-mysqldb state=present
@@ -193,6 +196,7 @@
   composer: 
     command: install
     working_dir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+  when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Copying repair.php (to repair permissions after deployments) to /usr/local/bin of server"
   template:
@@ -212,11 +216,13 @@
     month: "*"
     weekday: "*"
     job: "php -f {{ web_files_path }}{{ web_directory_for_suitecrm }}/cron.php > /dev/null 2>&1"
+  when: environment_type == "prod"
 
 - name: "Run SuiteCRM Quick Repair and Rebuild script"
   shell: 'php /usr/local/bin/repair.php'
   args:
     chdir: '{{ web_files_path }}{{ web_directory_for_suitecrm }}'
+  when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Setting ownership and permissions for web directory"
   file:
@@ -226,6 +232,7 @@
     group: "{{ web_group }}"
     mode: 0755
     recurse: yes
+  when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Removing Git folder from web server permissions"
   file:
@@ -235,6 +242,7 @@
     group: root
     mode: 0640
     recurse: yes
+  when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Removing .gitignore from web server permissions"
   file:
@@ -243,6 +251,7 @@
     owner: root
     group: root
     mode: 0640
+  when: (installation_type == "new" or installation_type == "upgrade")
   notify: restart-apache
 
 

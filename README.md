@@ -71,25 +71,33 @@ The linux group used by your webserver. The default value is `www-data` which as
 
 Manage package with apt, you can disable the installation of package
 ```
-    manage_packages: true
+	manage_packages: true
 ```
 
 The php.ini configurations, to allow or not the setting of these items, useful if your server is already setup with different values, default are true```
 ```
-configure_mysqli_allow_local_infile: true
-configure_memory_limit: true
-configure_post_max_size: true
-configure_upload_max_filesize: true
-configure_max_input_time: true
-configure_max_execution_time: true
+	configure_mysqli_allow_local_infile: true
+	configure_memory_limit: true
+	configure_post_max_size: true
+	configure_upload_max_filesize: true
+	configure_max_input_time: true
+	configure_max_execution_time: true
 ```
 
 Install Composer or not, default is true, disable it if you already have composer installed
-
 ```
-install_composer: true
+	install_composer: true
 ```
 
+Is this a "new", "upgrade" or "restore" installation? "new" and "upgrade" installs install files from Git, "restore" skips any git deployments and expect a later role to restore files to the needed directory. Default is "new".
+```
+	installation_type: "new"
+```
+
+Is this instance to be used for a "dev", "qa" or "prod" environment? Only "prod" environments will deploy the SuiteCRM schedulers. Default is "prod".
+```
+	environment_type: "prod"
+```
 
 Dependencies
 ------------

@@ -1,18 +1,18 @@
 ---
 # defaults file for git-download-suitecrm, will be used if any of these have been defined elsewhere
 
-# The default git repo to use when downloading and installing SuiteCRM
+# The default git repo to use when downloading and installing the application
 git_repo: "https://github.com/salesagility/SuiteCRM.git"
 
 # If you are using your own forked repo an want to use a branch instead of a tagged release then fill in a value and comment out the "tagged_release_version" variable 
 git_branch: ""
 
-# The database to create when setting up SuiteCRM
+# The database to create when setting up the application
 db_name: "suitecrm"
 
 # The Document Root or file path where the files will be stored and served up by your webserver. The default path is "/var/www/html" and assumes you are running Apache2 on Debian or Ubuntu
 web_files_path: "/var/www"
-web_directory_for_suitecrm: "/html"
+web_directory_for_application: "/html"
 
 
 # The linux username used by your webserver. The default value is "www-data" which assumes Apache is used on a Debian or Ubuntu linux
@@ -31,6 +31,7 @@ configure_post_max_size: true
 configure_upload_max_filesize: true
 configure_max_input_time: true
 configure_max_execution_time: true
+configure_php_timezone: true
 
 # Install composer or not, default yes
 install_composer: true
@@ -38,6 +39,6 @@ install_composer: true
 # Is this a "new", "upgrade" or "restore" installation? "new" and "upgrade" installs install files from Git, "restore" skips any git deployments and expect a later role to restore files to the needed directory.
 installation_type: "new"
 
-# Is this instance to be used for a "dev", "qa" or "prod" environment? Only "prod" environments will deploy the SuiteCRM schedulers.
+# Is this instance to be used for a "dev", "qa" or "prod" environment? Only "prod" environments will deploy any needed cron jobs or schedulers.
 environment_type: "prod"
 

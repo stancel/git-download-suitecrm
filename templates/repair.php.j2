@@ -12,10 +12,10 @@ if(!defined('sugarEntry'))define('sugarEntry', true);
 
 // original path
 // require_once('/var/www/html/include/entryPoint.php');
-require_once('{{ web_files_path }}{{ web_directory_for_suitecrm }}/include/entryPoint.php');
+require_once('{{ web_files_path }}{{ web_directory_for_application }}/include/entryPoint.php');
 // original path
 // require_once('/var/www/html/modules/Administration/QuickRepairAndRebuild.php');
-require_once('{{ web_files_path }}{{ web_directory_for_suitecrm }}/modules/Administration/QuickRepairAndRebuild.php');
+require_once('{{ web_files_path }}{{ web_directory_for_application }}/modules/Administration/QuickRepairAndRebuild.php');
 
 //Bug 27991 . Redirect to index.php if the request is not come from CLI.
 $sapi_type = php_sapi_name();

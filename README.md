@@ -16,7 +16,7 @@ Choose the git tagged release that you would like to download and install. No de
 ```
 	tagged_release_version: "v7.10.6"
 ```
-The default git repo to use when downloading and installing SuiteCRM. This is the default but can be changed if you have a forked/modified git repo that you would prefer to use.
+The default git repo to use when downloading and installing the application. This is the default but can be changed if you have a forked/modified git repo that you would prefer to use.
 
 ```
 	git_repo: "https://github.com/salesagility/SuiteCRM.git"
@@ -26,12 +26,12 @@ If you are using your own forked repo an want to use a branch instead of a tagge
 ```
 	git_branch: "my-super-special-branch"
 ```
-The database to create when setting up SuiteCRM. The default value is "suitecrm".
+The database to create when setting up the application. The default value is "suitecrm".
 
 ```
 	db_name: "suitecrm"
 ```
-The DB user to create when to be used by the SuiteCRM application. No default value set.
+The DB user to create when to be used by the application. No default value set.
 
 ```
 	db_user: "suitecrmDbUser"
@@ -50,13 +50,13 @@ The Document Root or file path where the files will be stored and served up by y
 
 First part => *web_files_path:* is the root directory of your webserver
 
-Second part =>  *web_directory_for_suitecrm:* is the suiteCRM directory inside the root directory
+Second part =>  *web_directory_for_application:* is the application directory inside the root directory
 
 !Be aware of the starting / !
 
 ```
     web_files_path: "/var/www"
-    web_directory_for_suitecrm: "/html"
+    web_directory_for_application: "/html"
 ```
 The linux username used by your webserver. The default value is `www-data` which assumes Apache is used on a Debian or Ubuntu linux.
 
@@ -82,6 +82,7 @@ The php.ini configurations, to allow or not the setting of these items, useful i
 	configure_upload_max_filesize: true
 	configure_max_input_time: true
 	configure_max_execution_time: true
+	configure_php_timezone: true
 ```
 
 Install Composer or not, default is true, disable it if you already have composer installed
@@ -113,7 +114,7 @@ Copy and edit *defaults/main.yml* to your *vars/main.yml*
 	  vars_files:
 	    - vars/main.yml
 	  roles:
-	    - { role: stancel.git-download-suitecrm }
+	    - stancel.git-download-suitecrm
 
 
 or just pass the variables in the playbook
@@ -126,7 +127,7 @@ or just pass the variables in the playbook
 		db_password: "some-really-secure-password"
 		mysql_root_password: "your MySQL root password"
 	  roles:
-	    - { role: stancel.git-download-suitecrm }
+	    - stancel.git-download-suitecrm
 
 License
 -------

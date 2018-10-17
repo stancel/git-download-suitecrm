@@ -76,36 +76,43 @@
     option: max_execution_time
     value: 300
   when: configure_max_execution_time
-# Leaving this here as a reminder that this should *NOT* be set to anything other than UTC
-#- name: "Changing PHP ini file options"
-#  ini_file: 
-#    path: /etc/php/7.0/apache2/php.ini
-#    section: PHP
-#    option: date.timezone
-#    value: America/New_York
+
+# The timezone for PHP and for the OS need to be set to UTC for sync integrations to work properly
+- name: "Set timezone in PHP ini file"
+  ini_file: 
+    path: /etc/php/7.0/apache2/php.ini
+    section: PHP
+    option: date.timezone
+    value: UTC
+  when: configure_php_timezone
+
+# The timezone for PHP and for the OS need to be set to UTC for sync integrations to work properly
+- name: 'Set Timezone to UTC'
+  timezone:
+    name: Etc/UTC
 
 - name: "Debugging the web files path variable"
   debug: var=web_files_path
 
 - name: "Debugging the web files path variable"
-  debug: var=web_directory_for_suitecrm
+  debug: var=web_directory_for_application
 
-- name: "Clearing out existing install directory"
+- name: "Clearing out existing web/install directory"
   file: 
     state: absent 
-    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+    path: "{{ web_files_path }}{{ web_directory_for_application }}"
 
-#- name: "Creating or re-creating html directory"
-#  file:
-#    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
-#    state: directory
-#    owner: "{{ web_user }}"
-#    group: "{{ web_group }}"
-#    mode: 0644
-#    recurse: yes
+- name: "Re-creating web/install directory"
+  file:
+    path: "{{ web_files_path }}{{ web_directory_for_application }}"
+    state: directory
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: 0644
+    recurse: yes
 
 - name: "Git clone the repo"
-  command: git clone {{ git_repo }} {{ web_files_path }}{{ web_directory_for_suitecrm }}
+  command: git clone {{ git_repo }} {{ web_files_path }}{{ web_directory_for_application }}
   args: 
     chdir: "{{ web_files_path }}"
   when: (installation_type == "new" or installation_type == "upgrade")
@@ -119,19 +126,21 @@
 - name: "Checkout the desired release"
   command: git checkout {{ tagged_release_version }}
   args: 
-    chdir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+    chdir: "{{ web_files_path }}{{ web_directory_for_application }}"
   when: (tagged_release_version != "") and 
           (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Checkout the desired branch"
   command: git checkout {{ git_branch }}
   args: 
-    chdir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+    chdir: "{{ web_files_path }}{{ web_directory_for_application }}"
   when: (git_branch != "") and 
           (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Install Python MySQL bindings required for Ansible MySQL module"
-  apt: name=python-mysqldb state=present
+  apt: 
+    name: python-mysqldb 
+    state: present
 
 - name: "MYSQL | Create {{db_name}} database"
   mysql_db:
@@ -195,7 +204,7 @@
 - name: "Install Composer packages"
   composer: 
     command: install
-    working_dir: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+    working_dir: "{{ web_files_path }}{{ web_directory_for_application }}"
   when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Copying repair.php (to repair permissions after deployments) to /usr/local/bin of server"
@@ -215,18 +224,18 @@
     day: "*"
     month: "*"
     weekday: "*"
-    job: "php -f {{ web_files_path }}{{ web_directory_for_suitecrm }}/cron.php > /dev/null 2>&1"
+    job: "php -f {{ web_files_path }}{{ web_directory_for_application }}/cron.php > /dev/null 2>&1"
   when: environment_type == "prod"
 
 - name: "Run SuiteCRM Quick Repair and Rebuild script"
   shell: 'php /usr/local/bin/repair.php'
   args:
-    chdir: '{{ web_files_path }}{{ web_directory_for_suitecrm }}'
+    chdir: '{{ web_files_path }}{{ web_directory_for_application }}'
   when: (installation_type == "new" or installation_type == "upgrade")
 
 - name: "Setting ownership and permissions for web directory"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}"
+    path: "{{ web_files_path }}{{ web_directory_for_application }}"
     state: directory
     owner: "{{ web_user }}"
     group: "{{ web_group }}"
@@ -236,7 +245,7 @@
 
 - name: "Removing Git folder from web server permissions"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}/.git"
+    path: "{{ web_files_path }}{{ web_directory_for_application }}/.git"
     state: directory
     owner: root
     group: root
@@ -246,7 +255,7 @@
 
 - name: "Removing .gitignore from web server permissions"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_suitecrm }}/.gitignore"
+    path: "{{ web_files_path }}{{ web_directory_for_application }}/.gitignore"
     state: file
     owner: root
     group: root

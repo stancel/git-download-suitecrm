@@ -23,11 +23,11 @@
   - php7.0-gd
   notify: 
   - restart-apache
-  when: manage_packages
+  when: git_download_suitecrm_manage_packages
 
 - name: 'Upgrade APT to the lastest packages'
   action: apt upgrade=safe
-  when: manage_packages
+  when: git_download_suitecrm_manage_packages
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -35,7 +35,7 @@
     section: MySQLi
     option: mysqli.allow_local_infile
     value: 0
-  when: configure_mysqli_allow_local_infile
+  when: git_download_suitecrm_configure_mysqli_allow_local_infile
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -43,7 +43,7 @@
     section: PHP
     option: memory_limit
     value: 756M
-  when: configure_memory_limit
+  when: git_download_suitecrm_configure_memory_limit
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -51,7 +51,7 @@
     section: PHP
     option: post_max_size
     value: 64M
-  when: configure_post_max_size
+  when: git_download_suitecrm_configure_post_max_size
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -59,7 +59,7 @@
     section: PHP
     option: upload_max_filesize
     value: 64M
-  when: configure_upload_max_filesize
+  when: git_download_suitecrm_configure_upload_max_filesize
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -67,7 +67,7 @@
     section: PHP
     option: max_input_time
     value: 60
-  when: configure_max_input_time
+  when: git_download_suitecrm_configure_max_input_time
 
 - name: "Changing PHP ini file options"
   ini_file: 
@@ -75,7 +75,7 @@
     section: PHP
     option: max_execution_time
     value: 300
-  when: configure_max_execution_time
+  when: git_download_suitecrm_configure_max_execution_time
 
 # The timezone for PHP and for the OS need to be set to UTC for sync integrations to work properly
 - name: "Set timezone in PHP ini file"
@@ -84,7 +84,7 @@
     section: PHP
     option: date.timezone
     value: UTC
-  when: configure_php_timezone
+  when: git_download_suitecrm_configure_php_timezone
 
 # The timezone for PHP and for the OS need to be set to UTC for sync integrations to work properly
 - name: 'Set Timezone to UTC'
@@ -92,70 +92,70 @@
     name: Etc/UTC
 
 - name: "Debugging the web files path variable"
-  debug: var=web_files_path
+  debug: var=git_download_suitecrm_web_files_path
 
 - name: "Debugging the web files path variable"
-  debug: var=web_directory_for_application
+  debug: var=git_download_suitecrm_web_directory_for_application
 
 - name: "Clearing out existing web/install directory"
   file: 
     state: absent 
-    path: "{{ web_files_path }}{{ web_directory_for_application }}"
+    path: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}"
 
 - name: "Re-creating web/install directory"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_application }}"
+    path: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}"
     state: directory
-    owner: "{{ web_user }}"
-    group: "{{ web_group }}"
+    owner: "{{ git_download_suitecrm_web_user }}"
+    group: "{{ git_download_suitecrm_web_group }}"
     mode: 0644
     recurse: yes
 
 - name: "Git clone the repo"
-  command: git clone {{ git_repo }} {{ web_files_path }}{{ web_directory_for_application }}
+  command: git clone {{ git_download_suitecrm_git_repo }} {{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}
   args: 
-    chdir: "{{ web_files_path }}"
-  when: (installation_type == "new" or installation_type == "upgrade")
+    chdir: "{{ git_download_suitecrm_web_files_path }}"
+  when: (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
-- name: "Debugging the git_branch variable"
-  debug: var=git_branch
+- name: "Debugging the git_download_suitecrm_git_branch variable"
+  debug: var=git_download_suitecrm_git_branch
 
-- name: "Debugging the tagged_release_version variable"
-  debug: var=tagged_release_version
+- name: "Debugging the git_download_suitecrm_tagged_release_version variable"
+  debug: var=git_download_suitecrm_tagged_release_version
 
 - name: "Checkout the desired release"
-  command: git checkout {{ tagged_release_version }}
+  command: git checkout {{ git_download_suitecrm_tagged_release_version }}
   args: 
-    chdir: "{{ web_files_path }}{{ web_directory_for_application }}"
-  when: (tagged_release_version != "") and 
-          (installation_type == "new" or installation_type == "upgrade")
+    chdir: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}"
+  when: (git_download_suitecrm_tagged_release_version != "") and 
+          (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
 - name: "Checkout the desired branch"
-  command: git checkout {{ git_branch }}
+  command: git checkout {{ git_download_suitecrm_git_branch }}
   args: 
-    chdir: "{{ web_files_path }}{{ web_directory_for_application }}"
-  when: (git_branch != "") and 
-          (installation_type == "new" or installation_type == "upgrade")
+    chdir: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}"
+  when: (git_download_suitecrm_git_branch != "") and 
+          (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
 - name: "Install Python MySQL bindings required for Ansible MySQL module"
   apt: 
     name: python-mysqldb 
     state: present
 
-- name: "MYSQL | Create {{db_name}} database"
+- name: "MYSQL | Create {{git_download_suitecrm_db_name}} database"
   mysql_db:
-    name: "{{ db_name }}"
-    login_password: "{{ mysql_root_password }}"
+    name: "{{ git_download_suitecrm_db_name }}"
+    login_password: "{{ git_download_suitecrm_mysql_root_password }}"
     state: present
     collation: "utf8_unicode_ci"
 
-- name: "MYSQL | Create {{db_name}} user"
+- name: "MYSQL | Create {{git_download_suitecrm_db_name}} user"
   mysql_user:
-    login_password: "{{ mysql_root_password }}"
-    name: "{{ db_user }}"
-    password: "{{ db_password }}"
+    login_password: "{{ git_download_suitecrm_mysql_root_password }}"
+    name: "{{ git_download_suitecrm_db_user }}"
+    password: "{{ git_download_suitecrm_db_password }}"
     host: '%'
-    priv: '{{ db_name }}.*:TRIGGER,CREATE ROUTINE,CREATE TEMPORARY TABLES,CREATE VIEW,ALTER ROUTINE,REFERENCES,EVENT,SHOW VIEW,EXECUTE,ALTER,DROP,CREATE,INDEX,SELECT,INSERT,UPDATE,DELETE'
+    priv: '{{ git_download_suitecrm_db_name }}.*:TRIGGER,CREATE ROUTINE,CREATE TEMPORARY TABLES,CREATE VIEW,ALTER ROUTINE,REFERENCES,EVENT,SHOW VIEW,EXECUTE,ALTER,DROP,CREATE,INDEX,SELECT,INSERT,UPDATE,DELETE'
     state: present
 
 - name: "Create and set a swap file if one is not set. SuiteCRM composer has problems otherwise"
@@ -204,8 +204,8 @@
 - name: "Install Composer packages"
   composer: 
     command: install
-    working_dir: "{{ web_files_path }}{{ web_directory_for_application }}"
-  when: (installation_type == "new" or installation_type == "upgrade")
+    working_dir: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}"
+  when: (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
 - name: "Copying repair.php (to repair permissions after deployments) to /usr/local/bin of server"
   template:
@@ -217,60 +217,60 @@
 
 - name: "Setup cron job for SuiteCRM Schedulers"
   cron:
-    user: "{{ web_user }}"
+    user: "{{ git_download_suitecrm_web_user }}"
     name: "SuiteCRM Schedulers"
     minute: "*"
     hour: "*"
     day: "*"
     month: "*"
     weekday: "*"
-    job: "php -f {{ web_files_path }}{{ web_directory_for_application }}/cron.php > /dev/null 2>&1"
-  when: environment_type == "prod"
+    job: "php -f {{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}/cron.php > /dev/null 2>&1"
+  when: git_download_suitecrm_environment_type == "prod"
 
 - name: "Run SuiteCRM Quick Repair and Rebuild script"
   shell: 'php /usr/local/bin/repair.php'
   args:
-    chdir: '{{ web_files_path }}{{ web_directory_for_application }}'
-  when: (installation_type == "new" or installation_type == "upgrade")
+    chdir: '{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}'
+  when: (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
 - name: "Setting ownership and permissions for web directory"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_application }}"
+    path: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}"
     state: directory
-    owner: "{{ web_user }}"
-    group: "{{ web_group }}"
+    owner: "{{ git_download_suitecrm_web_user }}"
+    group: "{{ git_download_suitecrm_web_group }}"
     mode: 0755
     recurse: yes
-  when: (installation_type == "new" or installation_type == "upgrade")
+  when: (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
 - name: "Ensure directories are 0755"
-  command: find {{ web_files_path }}{{ web_directory_for_application }} -type d -exec chmod -c 0755 {} \;
+  command: find {{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }} -type d -exec chmod -c 0755 {} \;
   register: chmod_result
   changed_when: "chmod_result.stdout != \"\""
 
 - name: "Ensure files are 0644"
-  command: find {{ web_files_path }}{{ web_directory_for_application }} -type f -exec chmod -c 0644 {} \;
+  command: find {{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }} -type f -exec chmod -c 0644 {} \;
   register: chmod_result
   changed_when: "chmod_result.stdout != \"\""
 
 - name: "Removing Git folder from web server permissions"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_application }}/.git"
+    path: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}/.git"
     state: directory
     owner: root
     group: root
     mode: 0640
     recurse: yes
-  when: (installation_type == "new" or installation_type == "upgrade")
+  when: (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
 
 - name: "Removing .gitignore from web server permissions"
   file:
-    path: "{{ web_files_path }}{{ web_directory_for_application }}/.gitignore"
+    path: "{{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}/.gitignore"
     state: file
     owner: root
     group: root
     mode: 0640
-  when: (installation_type == "new" or installation_type == "upgrade")
+  when: (git_download_suitecrm_installation_type == "new" or git_download_suitecrm_installation_type == "upgrade")
   notify: restart-apache
 
 

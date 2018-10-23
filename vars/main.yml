@@ -5,7 +5,7 @@
 # Fill in appropriate values below unless passing from a higher precedence
 
 # Choose the git tagged release that you would like to download and install. Comment this out if using a git branch instead.
-git_download_suitecrm_tagged_release_version: "v7.10.6"
+git_download_suitecrm_tagged_release_version: "v7.10.9"
 
 # The DB user to create when to be used by the SuiteCRM application
 git_download_suitecrm_db_user: "suitecrmDbUser"

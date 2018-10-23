@@ -14,7 +14,7 @@ Role Variables
 Choose the git tagged release that you would like to download and install. No default value set.  
 
 ```
-	git_download_suitecrm_tagged_release_version: "v7.10.6"
+	git_download_suitecrm_tagged_release_version: "v7.10.9"
 ```
 The default git repo to use when downloading and installing the application. This is the default but can be changed if you have a forked/modified git repo that you would prefer to use.
 
@@ -122,7 +122,7 @@ or just pass the variables in the playbook
 
 	- hosts: your_new_crm_server 
 	  vars:
-		git_download_suitecrm_tagged_release_version: "v7.10.6"
+		git_download_suitecrm_tagged_release_version: "v7.10.9"
 		git_download_suitecrm_db_user: "suitecrmDbUser"
 		git_download_suitecrm_db_password: "some-really-secure-password"
 		git_download_suitecrm_mysql_root_password: "your MySQL root password"

@@ -199,7 +199,7 @@
   script: ../files/install_composer.sh
   args: 
     creates: /usr/local/bin/composer
-  when: install_composer
+  when: git_download_suitecrm_install_composer
 
 - name: "Install Composer packages"
   composer: 

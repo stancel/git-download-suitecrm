@@ -215,8 +215,22 @@
     group: root
     mode: 0755
 
-- name: "Setup cron job for SuiteCRM Schedulers"
+- name: "Making sure SuiteCRM Schedulers are removed since this is a QA or DEV Environment"
   cron:
+    state: absent
+    user: "{{ git_download_suitecrm_web_user }}"
+    name: "SuiteCRM Schedulers"
+    minute: "*"
+    hour: "*"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    job: "php -f {{ git_download_suitecrm_web_files_path }}{{ git_download_suitecrm_web_directory_for_application }}/cron.php > /dev/null 2>&1"
+  when: (git_download_suitecrm_environment_type == "dev" or git_download_suitecrm_environment_type == "qa")
+
+- name: "Adding cron job for SuiteCRM Schedulers since this is a PROD Environment"
+  cron:
+    state: present
     user: "{{ git_download_suitecrm_web_user }}"
     name: "SuiteCRM Schedulers"
     minute: "*"

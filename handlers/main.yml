@@ -1,9 +1,34 @@
 ---
 # handlers file for git-download-suitecrm
 
-- name: restart-apache
-  service: 
-    name: apache2 
+- name: "restart-apache"
+  become: true
+  service:
+    name: apache2
     state: restarted
+  ignore_errors: true
+  listen: "restart webserver"
 
+- name: "restart nginx"
+  become: true
+  service:
+    name: nginx
+    state: restarted
+  ignore_errors: true
+  listen: "restart webserver"
 
+- name: "Restart Apache for good measure"
+  become: true
+  service:
+    name: apache2
+    state: restarted
+  ignore_errors: true
+  listen: "finish-suitecrm-permissions"
+
+- name: "Restart Nginx for good measure"
+  become: true
+  service:
+    name: nginx
+    state: restarted
+  ignore_errors: true
+  listen: "finish-suitecrm-permissions"

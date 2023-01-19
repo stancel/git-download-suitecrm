@@ -1,8 +1,11 @@
 ---
 # defaults file for git-download-suitecrm, will be used if any of these have been defined elsewhere
 
+# PHP Version to use (default currently 7.4)
+git_download_suitecrm_php_version: 7.4
+
 # The default git repo to use when downloading and installing the application
-git_download_suitecrm_git_repo: "https://github.com/salesagility/SuiteCRM.git"
+git_download_suitecrm_git_repo: "git@github.com:salesagility/SuiteCRM.git"
 
 # If you are using your own forked repo an want to use a branch instead of a tagged release then fill in a value and comment out the "tagged_release_version" variable 
 git_download_suitecrm_git_branch: ""
